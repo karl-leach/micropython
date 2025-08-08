@@ -55,3 +55,14 @@ jobs:
 
     - name: Build ci_${{matrix.ci_func }}
       run: source tools/ci.sh && ci_${{ matrix.ci_func }}
+
+    - name: Upload firmware artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: firmware-${{ matrix.ci_func }}
+        path: |
+          ports/esp32/build-*/firmware*.bin
+          ports/esp32/build-*/firmware*.elf
+          ports/esp32/build-*/firmware*.map
+
+
