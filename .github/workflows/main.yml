@@ -42,6 +42,15 @@ jobs:
           sed -i 's/DHCP_REQUEST_BACKOFF_SEQUENCE/DHCP_REQUEST_TIMEOUT_SEQUENCE/g' \
             $GITHUB_WORKSPACE/esp-idf/components/lwip/lwip/src/core/ipv4/dhcp.c
 
+      - name: Patch USB-Serial-JTAG packet size for C3
+        run: |
+          sed -i '1i\
+          #ifndef USB_SERIAL_JTAG_PACKET_SZ_BYTES\n\
+          #define USB_SERIAL_JTAG_PACKET_SZ_BYTES USB_SERIAL_JTAG_RDWR_BYTE_S\n\
+          #endif' \
+          $GITHUB_WORKSPACE/ports/esp32/usb_serial_jtag.c
+
+
       - name: Export ESP-IDF environment
         run: |
           source $GITHUB_WORKSPACE/esp-idf/export.sh
