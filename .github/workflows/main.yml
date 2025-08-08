@@ -25,12 +25,12 @@ jobs:
           cd esp-idf
           git checkout v5.1.2
           ./install.sh esp32c3
-          echo ". $(pwd)/export.sh" >> $GITHUB_ENV
+          echo "source $(pwd)/export.sh" >> $GITHUB_ENV
 
       - name: Build firmware for ESP32-C3
         working-directory: ports/esp32
         run: |
-          . $GITHUB_ENV
+          .$GITHUB_ENV
           make BOARD=GENERIC_C3
 
       - name: Upload firmware.bin
