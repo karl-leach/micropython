@@ -25,7 +25,11 @@ jobs:
           cd esp-idf
           git checkout v5.1.2
           ./install.sh esp32c3
-          echo "source $(pwd)/export.sh" >> $GITHUB_ENV
+          
+      - name: Set up ESP-IDF environment
+        run: |
+          source /home/runner/work/micropython/micropython/esp-idf/export.sh
+          echo "ESP-IDF environment sourced successfully"  
 
       - name: Build firmware for ESP32-C3
         working-directory: ports/esp32
