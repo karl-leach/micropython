@@ -29,18 +29,23 @@ jobs:
         with:
           cmakeVersion: '3.19.7'
 
-      - name: Install ESP-IDF v5.1.2
+      - name: Install ESP-IDF v5.2
         run: |
           git clone https://github.com/espressif/esp-idf.git $GITHUB_WORKSPACE/esp-idf
           cd $GITHUB_WORKSPACE/esp-idf
-          git checkout v5.1.2
+          git checkout release/v5.2
           git submodule update --init --recursive
           ./install.sh esp32c3
+
+      - name: Patch lwIP DHCP backoff helper
+        run: |
+          sed -i 's/DHCP_REQUEST_BACKOFF_SEQUENCE/DHCP_REQUEST_TIMEOUT_SEQUENCE/g' \
+            $GITHUB_WORKSPACE/esp-idf/components/lwip/lwip/src/core/ipv4/dhcp.c
 
       - name: Export ESP-IDF environment
         run: |
           source $GITHUB_WORKSPACE/esp-idf/export.sh
-          echo "ESP-IDF v5.1.2 environment sourced"
+          echo "ESP-IDF v5.2 environment sourced"
 
       - name: Build firmware for ESP32-C3
         run: |
