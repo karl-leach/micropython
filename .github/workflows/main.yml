@@ -50,6 +50,13 @@ jobs:
           #endif' \
           $GITHUB_WORKSPACE/ports/esp32/usb_serial_jtag.c
 
+      - name: Patch panic handler WDT API
+        run: |
+          sed -i '1i\
+          #ifndef esp_panic_handler_reconfigure_wdts\n\
+          #define esp_panic_handler_reconfigure_wdts esp_panic_handler_feed_wdts\n\
+          #endif' \
+          ports/esp32/panichandler.c
 
       - name: Export ESP-IDF environment
         run: |
