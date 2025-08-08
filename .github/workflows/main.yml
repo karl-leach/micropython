@@ -1,0 +1,40 @@
+name: Build ESP32-C3 MicroPython Firmware
+
+on:
+  push:
+    branches: [c3-wake-and-pins]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip python3-venv git wget flex bison gperf cmake ninja-build ccache libffi-dev libssl-dev dfu-util
+
+      - name: Install ESP-IDF
+        run: |
+          git clone --recursive https://github.com/espressif/esp-idf.git
+          cd esp-idf
+          git checkout v5.1.2
+          ./install.sh esp32c3
+          echo ". $(pwd)/export.sh" >> $GITHUB_ENV
+
+      - name: Build firmware for ESP32-C3
+        working-directory: ports/esp32
+        run: |
+          . $GITHUB_ENV
+          make BOARD=GENERIC_C3
+
+      - name: Upload firmware.bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-esp32-c3
+          path: ports/esp32/build-GENERIC_C3/firmware.bin
